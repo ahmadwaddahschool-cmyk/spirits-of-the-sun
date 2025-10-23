@@ -1,0 +1,65 @@
+[gd_scene load_steps=10 format=3 uid="uid://bmqlwhekg3p6b"]
+
+[ext_resource type="Texture2D" uid="uid://c4mwdon7w5rlh" path="res://assets/player/Satyr_2/Idle.png" id="1_6e84v"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4dvvg"]
+atlas = ExtResource("1_6e84v")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rnjyy"]
+atlas = ExtResource("1_6e84v")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4vge2"]
+atlas = ExtResource("1_6e84v")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_04qyp"]
+atlas = ExtResource("1_6e84v")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j7wrs"]
+atlas = ExtResource("1_6e84v")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fws66"]
+atlas = ExtResource("1_6e84v")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hh0fu"]
+atlas = ExtResource("1_6e84v")
+region = Rect2(768, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3m5ht"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4dvvg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rnjyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4vge2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_04qyp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j7wrs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fws66")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hh0fu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_3m5ht")
