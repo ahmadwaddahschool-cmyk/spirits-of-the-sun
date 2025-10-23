@@ -1,0 +1,77 @@
+[gd_scene load_steps=11 format=3 uid="uid://i5xa2nu2aj1o"]
+
+[ext_resource type="Texture2D" uid="uid://cwv85r7b8kedn" path="res://assets/enemy/2/Kitsune/Idle.png" id="1_yexgp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cn3wf"]
+atlas = ExtResource("1_yexgp")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i4u0x"]
+atlas = ExtResource("1_yexgp")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x8b50"]
+atlas = ExtResource("1_yexgp")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hrc2c"]
+atlas = ExtResource("1_yexgp")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n6you"]
+atlas = ExtResource("1_yexgp")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ahygq"]
+atlas = ExtResource("1_yexgp")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b3p8f"]
+atlas = ExtResource("1_yexgp")
+region = Rect2(768, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g6ibs"]
+atlas = ExtResource("1_yexgp")
+region = Rect2(896, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2tksr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cn3wf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i4u0x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x8b50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hrc2c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n6you")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ahygq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b3p8f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g6ibs")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_2tksr")
+animation = &"idle"
+frame = 4
+frame_progress = 0.8319287
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
