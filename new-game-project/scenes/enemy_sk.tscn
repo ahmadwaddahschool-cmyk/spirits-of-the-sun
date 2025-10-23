@@ -1,0 +1,72 @@
+[gd_scene load_steps=10 format=3 uid="uid://gdgufq0rh5qs"]
+
+[ext_resource type="Texture2D" uid="uid://b8633fwyo1kr8" path="res://assets/enemy/1/Skeleton_Spearman/Idle.png" id="1_ep14o"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bms80"]
+atlas = ExtResource("1_ep14o")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pru5f"]
+atlas = ExtResource("1_ep14o")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_72x2s"]
+atlas = ExtResource("1_ep14o")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m2ogk"]
+atlas = ExtResource("1_ep14o")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4j4wt"]
+atlas = ExtResource("1_ep14o")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ew2f8"]
+atlas = ExtResource("1_ep14o")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mdp5u"]
+atlas = ExtResource("1_ep14o")
+region = Rect2(768, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jhm1c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bms80")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pru5f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_72x2s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m2ogk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4j4wt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ew2f8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mdp5u")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 7.0
+}]
+
+[node name="enemy-sk" type="CharacterBody2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-6, -4)
+sprite_frames = SubResource("SpriteFrames_jhm1c")
+animation = &"idle"
+autoplay = "idle"
+frame = 4
+frame_progress = 0.37535393
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
