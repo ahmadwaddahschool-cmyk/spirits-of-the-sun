@@ -1,80 +1,47 @@
-[gd_scene load_steps=12 format=3 uid="uid://c5aguqaf30ym3"]
+[gd_scene load_steps=3 format=3 uid="uid://cn1xlkb8qj3wf"]
 
-[ext_resource type="Texture2D" uid="uid://2hjch7yrycdl" path="res://assets/player/Satyr_2/Charge.png" id="2_6fs0s"]
+[sub_resource type="GDScript" id="GDScript_2fjyq"]
+script/source = "extends Area2D
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_c8out"]
-atlas = ExtResource("2_6fs0s")
-region = Rect2(0, 0, 128, 128)
+var damage = 5
+var hit_enemies = []
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7gqiv"]
-atlas = ExtResource("2_6fs0s")
-region = Rect2(128, 0, 128, 128)
+func _ready():
+	# Connect the area entered signal
+	body_entered.connect(_on_body_entered)
+	
+	# Auto-destroy after a short time
+	$LifetimeTimer.wait_time = 0.3
+	$LifetimeTimer.one_shot = true
+	$LifetimeTimer.timeout.connect(_on_timeout)
+	$LifetimeTimer.start()
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_m0rgg"]
-atlas = ExtResource("2_6fs0s")
-region = Rect2(256, 0, 128, 128)
+func set_damage(value):
+	damage = value
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_2shtu"]
-atlas = ExtResource("2_6fs0s")
-region = Rect2(384, 0, 128, 128)
+func _on_body_entered(body):
+	# Prevent hitting the same enemy multiple times
+	if body in hit_enemies:
+		return
+	
+	# Check if the body has a take_damage method (is an enemy)
+	if body.has_method(\"take_damage\"):
+		body.take_damage(damage)
+		hit_enemies.append(body)
+		print(\"Hit enemy for \", damage, \" damage!\")
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_40vx7"]
-atlas = ExtResource("2_6fs0s")
-region = Rect2(512, 0, 128, 128)
+func _on_timeout():
+	queue_free()
+"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_skmhp"]
-atlas = ExtResource("2_6fs0s")
-region = Rect2(640, 0, 128, 128)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ry3m3"]
+size = Vector2(40, 11)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_j1mqd"]
-atlas = ExtResource("2_6fs0s")
-region = Rect2(768, 0, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_4miox"]
-atlas = ExtResource("2_6fs0s")
-region = Rect2(896, 0, 128, 128)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_55pl6"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_c8out")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_7gqiv")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_m0rgg")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2shtu")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_40vx7")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_skmhp")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_j1mqd")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_4miox")
-}],
-"loop": true,
-"name": &"default",
-"speed": 6.0
-}]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_td8ue"]
-size = Vector2(41.5, 25)
-
-[node name="CharacterBody2D" type="CharacterBody2D"]
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_55pl6")
-frame_progress = 0.69505537
+[node name="Attack" type="Area2D"]
+script = SubResource("GDScript_2fjyq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(18, 1)
-shape = SubResource("RectangleShape2D_td8ue")
+position = Vector2(-20, -5)
+shape = SubResource("RectangleShape2D_ry3m3")
+
+[node name="LifetimeTimer" type="Timer" parent="."]
