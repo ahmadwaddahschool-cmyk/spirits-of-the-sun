@@ -79,6 +79,34 @@ region = Rect2(640, 63, 128, 65)
 atlas = ExtResource("4_hcr21")
 region = Rect2(768, 63, 128, 65)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_j62yd"]
+atlas = ExtResource("6_m468s")
+region = Rect2(0, 59, 128, 69)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_24snw"]
+atlas = ExtResource("6_m468s")
+region = Rect2(128, 59, 128, 69)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0oiwa"]
+atlas = ExtResource("6_m468s")
+region = Rect2(256, 59, 128, 69)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_api65"]
+atlas = ExtResource("6_m468s")
+region = Rect2(384, 59, 128, 69)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xfyst"]
+atlas = ExtResource("6_m468s")
+region = Rect2(512, 59, 128, 69)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_37dx6"]
+atlas = ExtResource("6_m468s")
+region = Rect2(640, 59, 128, 69)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_50iwo"]
+atlas = ExtResource("6_m468s")
+region = Rect2(768, 59, 128, 69)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_3hgpq"]
 atlas = ExtResource("5_x5oq2")
 region = Rect2(0, 63, 128, 65)
@@ -110,34 +138,6 @@ region = Rect2(768, 63, 128, 65)
 [sub_resource type="AtlasTexture" id="AtlasTexture_7tdlt"]
 atlas = ExtResource("5_x5oq2")
 region = Rect2(896, 63, 128, 65)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_j62yd"]
-atlas = ExtResource("6_m468s")
-region = Rect2(0, 59, 128, 69)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_24snw"]
-atlas = ExtResource("6_m468s")
-region = Rect2(128, 59, 128, 69)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0oiwa"]
-atlas = ExtResource("6_m468s")
-region = Rect2(256, 59, 128, 69)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_api65"]
-atlas = ExtResource("6_m468s")
-region = Rect2(384, 59, 128, 69)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xfyst"]
-atlas = ExtResource("6_m468s")
-region = Rect2(512, 59, 128, 69)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_37dx6"]
-atlas = ExtResource("6_m468s")
-region = Rect2(640, 59, 128, 69)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_50iwo"]
-atlas = ExtResource("6_m468s")
-region = Rect2(768, 59, 128, 69)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fapi5"]
 animations = [{
@@ -217,6 +217,32 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_j62yd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_24snw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0oiwa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_api65")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xfyst")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_37dx6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_50iwo")
+}],
+"loop": true,
+"name": &"run + attack",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_3hgpq")
 }, {
 "duration": 1.0,
@@ -241,34 +267,8 @@ animations = [{
 "texture": SubResource("AtlasTexture_7tdlt")
 }],
 "loop": true,
-"name": &"run",
+"name": &"walk",
 "speed": 6.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_j62yd")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_24snw")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0oiwa")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_api65")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xfyst")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_37dx6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_50iwo")
-}],
-"loop": true,
-"name": &"run + attack",
-"speed": 7.0
 }]
 
 [sub_resource type="GDScript" id="GDScript_fdqbe"]
@@ -288,12 +288,12 @@ func _process(delta: float) -> void:
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l21ug"]
 size = Vector2(22, 56)
 
-[node name="enemy-1" type="Node2D"]
+[node name="CharacterBody2D" type="CharacterBody2D"]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_fapi5")
-animation = &"run + attack"
-frame_progress = 0.63400155
+animation = &"walk"
+autoplay = "idle"
 script = SubResource("GDScript_fdqbe")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
