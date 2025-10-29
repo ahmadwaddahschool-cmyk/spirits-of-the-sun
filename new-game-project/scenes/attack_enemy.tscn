@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://da4g0wpgle1qk"]
+
+[ext_resource type="Script" uid="uid://ctd8hk2535jne" path="res://scripts/attack_enemy.gd" id="1_58vdd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cbtqc"]
+size = Vector2(20, 8)
+
+[node name="attack_enemy" type="Area2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_58vdd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 0)
+shape = SubResource("RectangleShape2D_cbtqc")

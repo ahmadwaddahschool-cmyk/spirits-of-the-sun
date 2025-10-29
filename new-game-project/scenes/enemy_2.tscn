@@ -254,19 +254,18 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l21ug"]
 size = Vector2(28, 56)
 
-[node name="CharacterBody2D" type="CharacterBody2D" groups=["enemies"]]
-collision_layer = 4
-collision_mask = 2
+[node name="CharacterBody2D" type="CharacterBody2D" groups=["enemy"]]
+position = Vector2(-1, 0)
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_a2yeo")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(199, 57.5)
+position = Vector2(194, 58)
 sprite_frames = SubResource("SpriteFrames_fapi5")
 animation = &"idle"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-light_mask = 2
-visibility_layer = 4
-position = Vector2(194, 71)
+position = Vector2(188, 71)
 shape = SubResource("RectangleShape2D_l21ug")

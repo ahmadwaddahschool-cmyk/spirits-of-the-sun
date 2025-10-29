@@ -1,159 +1,162 @@
 extends CharacterBody2D
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var attack_scene = preload("res://scenes/attack_enemy.tscn")
 
 const SPEED = 50.0
-const CHASE_RANGE = 200.0
-const ATTACK_RANGE = 40.0
-const ATTACK_DAMAGE = 4
+const ATTACK_DAMAGE = 5
 const MAX_HEALTH = 10
+const ATTACK_RANGE = 50.0
+const STOP_DISTANCE = 40.0
+const ATTACK_COOLDOWN = 2.0
+const DETECTION_RANGE = 200.0
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var health = MAX_HEALTH
-var player = null
 var is_attacking = false
-var is_hurt = false
-var is_dead = false
-var attack_cooldown = 0.0
+var attack_timer = 0.0
+var attack_cooldown_timer = 0.0
 var locked_y_position = 0.0
+var player = null
 
 func _ready():
 	print("Enemy spawned with health: ", health)
-	# Connect animation finished signal
-	if animated_sprite_2d:
-		animated_sprite_2d.animation_finished.connect(_on_animation_finished)
+	# Add to enemy group
+	add_to_group("enemy")
+	
+	# Find the player in the scene
+	player = get_tree().get_first_node_in_group("player")
+	if not player:
+		print("Warning: No player found! Make sure player is in 'player' group")
 
 func _physics_process(delta):
-	# Don't process if dead
-	if is_dead:
-		return
+	# Handle attack timer
+	if is_attacking:
+		attack_timer -= delta
+		if attack_timer <= 0:
+			is_attacking = false
+			print("Enemy attack finished")
 	
-	# Apply gravity (same as player)
+	# Handle attack cooldown
+	if attack_cooldown_timer > 0:
+		attack_cooldown_timer -= delta
+	
+	# Add gravity
 	if not is_on_floor():
 		velocity.y += gravity * delta
 	
-	# Handle attack cooldown
-	if attack_cooldown > 0:
-		attack_cooldown -= delta
-	
-	# Lock Y position during hurt or attack (same as player)
-	if is_hurt or is_attacking:
-		velocity.x = 0
-		velocity.y = 0
-		position.y = locked_y_position
-		move_and_slide()
-		# Update locked position when on floor
-		if is_on_floor() and not is_attacking and not is_hurt:
-			locked_y_position = position.y
-		return
-	
-	# Find player if not already found
-	if player == null:
-		player = get_tree().get_first_node_in_group("player")
-	
-	if player != null and not player.is_queued_for_deletion():
-		var distance_to_player = global_position.distance_to(player.global_position)
+	# AI behavior
+	if player and is_instance_valid(player):
+		var distance_to_player = position.distance_to(player.position)
 		
-		# Flip sprite to face player
-		if player.global_position.x < global_position.x:
-			animated_sprite_2d.flip_h = true
-		else:
-			animated_sprite_2d.flip_h = false
-		
-		# Check if in attack range
-		if distance_to_player <= ATTACK_RANGE and attack_cooldown <= 0 and is_on_floor():
-			attack_player()
-		# Check if in chase range
-		elif distance_to_player <= CHASE_RANGE:
-			chase_player()
-		else:
-			# Idle
-			velocity.x = move_toward(velocity.x, 0, SPEED)
-			if animated_sprite_2d:
+		# Check if player is in detection range
+		if distance_to_player < DETECTION_RANGE:
+			# Check if player is in attack range
+			if distance_to_player < ATTACK_RANGE and is_on_floor() and not is_attacking and attack_cooldown_timer <= 0:
+				perform_attack()
+			elif not is_attacking and distance_to_player > STOP_DISTANCE:
+				# Only move if farther than stop distance
+				move_towards_player(distance_to_player)
+			elif not is_attacking:
+				# Stop and idle when close
+				velocity.x = move_toward(velocity.x, 0, SPEED * 2)
 				animated_sprite_2d.play("idle")
+				
+				# Face the player
+				if player.position.x > position.x:
+					animated_sprite_2d.flip_h = false
+				else:
+					animated_sprite_2d.flip_h = true
+		elif not is_attacking:
+			# Idle when player is far
+			animated_sprite_2d.play("idle")
+			velocity.x = move_toward(velocity.x, 0, SPEED)
 	else:
 		# No player, just idle
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		if animated_sprite_2d:
+		if not is_attacking:
 			animated_sprite_2d.play("idle")
+			velocity.x = move_toward(velocity.x, 0, SPEED)
 	
-	# Move and slide (same as player)
+	# During attack, lock vertical movement and stop horizontal
+	if is_attacking:
+		velocity.y = 0
+		position.y = locked_y_position
+		velocity.x = move_toward(velocity.x, 0, SPEED * 3)
+	
 	move_and_slide()
 	
-	# Update locked position if on floor (same as player)
-	if is_on_floor() and not is_attacking and not is_hurt:
+	# Update locked position if on floor and not attacking
+	if is_on_floor() and not is_attacking:
 		locked_y_position = position.y
 
-func chase_player():
-	var direction = sign(player.global_position.x - global_position.x)
-	velocity.x = direction * SPEED
-	
-	# Play run animation
-	if animated_sprite_2d:
-		animated_sprite_2d.play("run")
-
-func attack_player():
-	is_attacking = true
-	attack_cooldown = 1.5  # 1.5 seconds between attacks
-	locked_y_position = position.y
-	velocity.x = 0
-	velocity.y = 0
-	
-	# Play run+attack animation
-	if animated_sprite_2d:
-		if animated_sprite_2d.sprite_frames.has_animation("run + attack"):
-			animated_sprite_2d.play("run + attack")
-		else:
-			# Fallback if run+attack doesn't exist
-			animated_sprite_2d.play("idle")
-	
-	# Deal damage to player in the middle of attack animation
-	await get_tree().create_timer(0.3).timeout
-	
-	if player != null and not player.is_queued_for_deletion():
-		if player.has_method("take_damage"):
-			player.take_damage(ATTACK_DAMAGE)
-			print("Enemy attacked player for ", ATTACK_DAMAGE, " damage!")
-
-func take_damage(amount):
-	if is_dead:
+func move_towards_player(distance: float):
+	# Don't move if too close
+	if distance < STOP_DISTANCE:
+		velocity.x = move_toward(velocity.x, 0, SPEED * 2)
 		return
 	
+	var direction = sign(player.position.x - position.x)
+	
+	# Flip sprite based on direction
+	if direction > 0:
+		animated_sprite_2d.flip_h = false
+	elif direction < 0:
+		animated_sprite_2d.flip_h = true
+	
+	# Move towards player
+	velocity.x = direction * SPEED
+	
+	# Play walk animation
+	if is_on_floor():
+		animated_sprite_2d.play("walk")
+
+func perform_attack():
+	is_attacking = true
+	attack_cooldown_timer = ATTACK_COOLDOWN
+	
+	# Lock the Y position at attack start
+	locked_y_position = position.y
+	velocity.y = 0
+	velocity.x = 0
+	
+	# Face the player before attacking
+	if player and is_instance_valid(player):
+		if player.position.x > position.x:
+			animated_sprite_2d.flip_h = false
+		else:
+			animated_sprite_2d.flip_h = true
+	
+	# Play attack animation
+	animated_sprite_2d.play("attack")
+	attack_timer = 1.0
+	
+	# Spawn attack hitbox
+	spawn_attack_hitbox()
+	print("Enemy attacking!")
+
+func spawn_attack_hitbox():
+	var attack_instance = attack_scene.instantiate()
+	
+	# Position the attack in front of the enemy
+	var attack_offset = 30 if not animated_sprite_2d.flip_h else -30
+	attack_instance.position = position + Vector2(attack_offset, 0)
+	
+	# Pass damage value and owner to the attack
+	if attack_instance.has_method("set_damage"):
+		attack_instance.set_damage(ATTACK_DAMAGE)
+	if attack_instance.has_method("set_owner_type"):
+		attack_instance.set_owner_type("enemy")
+	
+	# Add to parent (scene root)
+	get_parent().add_child(attack_instance)
+
+func take_damage(amount):
 	health -= amount
 	print("Enemy took ", amount, " damage! Health: ", health)
 	
 	if health <= 0:
 		die()
-	else:
-		# Play hurt animation
-		is_hurt = true
-		locked_y_position = position.y
-		velocity.x = 0
-		velocity.y = 0
-		if animated_sprite_2d:
-			animated_sprite_2d.play("hurt")
 
 func die():
-	is_dead = true
-	velocity.x = 0
-	velocity.y = 0
 	print("Enemy died!")
-	
-	# Play death animation
-	if animated_sprite_2d:
-		animated_sprite_2d.play("dead")
-	
-	# Wait for death animation to finish, then remove
-	await get_tree().create_timer(1.0).timeout
 	queue_free()
-
-func _on_animation_finished():
-	var current_anim = animated_sprite_2d.animation
-	
-	# Reset hurt state after hurt animation
-	if current_anim == "hurt":
-		is_hurt = false
-	
-	# Reset attack state after attack animation
-	if current_anim == "run + attack":
-		is_attacking = false
