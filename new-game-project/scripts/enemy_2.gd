@@ -1,28 +1,50 @@
 extends CharacterBody2D
-@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
-@export var speed = 70
-var player_distacne  = false
-var player_knight = null
+@onready var anim = $AnimatedSprite2D
+@onready var player = get_tree().get_first_node_in_group("player")
+@export var speed = 80
+@export var attack_range = 40
+@export var detection_range = 200
+var is_dead = false
+@export var health = 10
 
+func _physics_process(delta):
+	if is_dead:
+		return
+	
+	if player == null:
+		return
+	
+	var distance = global_position.distance_to(player.global_position)
 
+	if distance > detection_range:
+		# العدو بعيد -> Idle
+		anim.play("idle")
+		velocity = Vector2.ZERO
 
-func _physics_process(delta: float) -> void:
-	if player_distacne:
-		position += (player_knight.position - position) / speed
+	elif distance > attack_range:
+		# العدو شاف اللاعب -> يركض نحوه
+		anim.play("run")
+		var direction = (player.global_position - global_position).normalized()
+		velocity = direction * speed
+		move_and_slide()
+
+	else:
+		# العدو قريب -> يهاجم
+		anim.play("attack")
+		velocity = Vector2.ZERO
+
+func take_damage(amount):
+	if is_dead:
+		return
+	health -= amount
+	print("Enemy HP:", health)
+	if health <= 0:
+		die()
 		
-		
-
-	if not is_on_floor():
-		velocity.y += gravity*delta
-
-
-func _on_player_dis_body_entered(body: Node2D) -> void:
-	player_knight = body
-	player_distacne = true 
-	animated_sprite_2d.play("run")
-
-func _on_player_dis_body_exited(body: Node2D) -> void:
-	player_knight = null
-	player_distacne = false
+func die():
+	is_dead = true
+	anim.play("dead")
+	velocity = Vector2.ZERO
+	await anim.animation_finished
+	queue_free()

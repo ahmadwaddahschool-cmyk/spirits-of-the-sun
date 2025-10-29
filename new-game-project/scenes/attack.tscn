@@ -38,6 +38,8 @@ func _on_timeout():
 size = Vector2(40, 11)
 
 [node name="Attack" type="Area2D"]
+collision_layer = 2
+collision_mask = 4
 script = SubResource("GDScript_2fjyq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

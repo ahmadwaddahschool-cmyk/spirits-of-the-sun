@@ -288,7 +288,7 @@ func _process(delta: float) -> void:
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l21ug"]
 size = Vector2(22, 56)
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="CharacterBody2D" type="CharacterBody2D" groups=["enemies"]]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_fapi5")

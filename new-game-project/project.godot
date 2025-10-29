@@ -15,6 +15,11 @@ run/main_scene="uid://bmw6hxcb71v0c"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
+[global_group]
+
+enemies=""
+player=""
+
 [input]
 
 ui_left={
