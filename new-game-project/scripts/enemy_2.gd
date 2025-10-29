@@ -7,11 +7,20 @@ extends CharacterBody2D
 @export var detection_range = 200
 var is_dead = false
 @export var health = 10
+var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _physics_process(delta):
-	if is_dead:
-		return
+	if not is_on_floor():
+		velocity.y += gravity * delta
+	else:
+		velocity.y = 0  # يثبت على الأرض
+
+	# مثال بسيط للحركة
+	velocity.x = -speed  # يتحرك لليسار
 	
+
+
+
 	if player == null:
 		return
 	
@@ -33,6 +42,7 @@ func _physics_process(delta):
 		# العدو قريب -> يهاجم
 		anim.play("attack")
 		velocity = Vector2.ZERO
+		
 
 func take_damage(amount):
 	if is_dead:

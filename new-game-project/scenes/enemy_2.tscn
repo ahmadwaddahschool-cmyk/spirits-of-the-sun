@@ -266,7 +266,7 @@ func _process(delta: float) -> void:
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l21ug"]
-size = Vector2(22, 56)
+size = Vector2(28, 56)
 
 [node name="CharacterBody2D" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 4
@@ -276,12 +276,12 @@ script = ExtResource("1_a2yeo")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(199, 57.5)
 sprite_frames = SubResource("SpriteFrames_fapi5")
-animation = &"attack"
+animation = &"idle"
 autoplay = "idle"
 script = SubResource("GDScript_fdqbe")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 light_mask = 2
 visibility_layer = 4
-position = Vector2(201, 57.5)
+position = Vector2(194, 71)
 shape = SubResource("RectangleShape2D_l21ug")
