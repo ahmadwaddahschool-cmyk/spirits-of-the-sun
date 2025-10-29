@@ -2894,5 +2894,8 @@ zoom = Vector2(2.5, 2.5)
 position_smoothing_enabled = true
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("10_blm8a")]
-position = Vector2(-533, -57)
+position = Vector2(-227, -72)
 scale = Vector2(0.75, 0.75)
+
+[node name="CharacterBody2D2" parent="." instance=ExtResource("10_blm8a")]
+position = Vector2(-381, -87)

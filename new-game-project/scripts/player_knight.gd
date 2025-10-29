@@ -7,11 +7,16 @@ const SPEED = 70.0
 const RUN_SPEED = 110.0
 const JUMP_VELOCITY = -300.0
 const ATTACK_DAMAGE = 5
+const MAX_HEALTH = 20
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var is_attacking = false
 var attack_timer = 0.0
-var locked_y_position = 0.0  # Store Y position when attack starts
+var locked_y_position = 0.0
+var health = MAX_HEALTH
+
+func _ready():
+	print("Player health: ", health)
 
 func _physics_process(delta):
 	# Handle attack timer
@@ -74,7 +79,7 @@ func _physics_process(delta):
 	# During ANY ground attack (idle or running), lock vertical movement
 	if is_attacking:
 		velocity.y = 0
-		position.y = locked_y_position  # Force position back to locked position
+		position.y = locked_y_position
 	
 	move_and_slide()
 	
@@ -94,13 +99,13 @@ func perform_attack():
 	if is_running:
 		if animated_sprite_2d.sprite_frames.has_animation("run + attack"):
 			animated_sprite_2d.play("run + attack")
-			attack_timer = 1.0  # Adjust this based on run+attack animation length
+			attack_timer = 1.0
 		else:
 			animated_sprite_2d.play("attack")
-			attack_timer = 1.0  # Adjust this based on attack animation length
+			attack_timer = 1.0
 	else:
 		animated_sprite_2d.play("attack")
-		attack_timer = 1.0  # Adjust this: frames / FPS (e.g., 6 frames / 6 FPS = 1.0 second)
+		attack_timer = 1.0
 	
 	# Spawn attack collision
 	spawn_attack_hitbox()
@@ -119,3 +124,17 @@ func spawn_attack_hitbox():
 	
 	# Add to parent (scene root)
 	get_parent().add_child(attack_instance)
+
+func take_damage(amount):
+	health -= amount
+	print("Player took ", amount, " damage! Health: ", health)
+	
+	# Optional: Add hit animation/effect here
+	
+	if health <= 0:
+		die()
+
+func die():
+	print("Player died!")
+	# Optional: Play death animation
+	queue_free()  # Remove player from scene
