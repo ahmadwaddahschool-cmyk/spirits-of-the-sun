@@ -5,6 +5,7 @@ extends CharacterBody2D
 
 const SPEED = 70.0
 const RUN_SPEED = 110.0
+const RUN_JUMP = -400
 const JUMP_VELOCITY = -300.0
 const ATTACK_DAMAGE = 5
 const MAX_HEALTH = 20
@@ -33,7 +34,8 @@ func _physics_process(delta):
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor() and not is_attacking:
 		velocity.y = JUMP_VELOCITY
-	
+
+
 	# Handle attack
 	if Input.is_action_just_pressed("ui_attack") and is_on_floor() and not is_attacking:
 		perform_attack()
@@ -44,6 +46,12 @@ func _physics_process(delta):
 	# Check if Shift is pressed (for running)
 	var is_running = Input.is_action_pressed("ui_shift")
 	var current_speed = RUN_SPEED if is_running else SPEED
+	
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor() and not is_attacking:
+		if is_running:
+			velocity.y = RUN_JUMP   # -800 (running jump)
+		else:
+			velocity.y = JUMP_VELOCITY   # -300 (normal jump)
 	
 	# Flip sprite depending on direction (not during idle attack)
 	if not is_attacking or is_running:

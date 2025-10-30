@@ -108,7 +108,7 @@ func move_towards_player(distance: float):
 	
 	# Play walk animation
 	if is_on_floor():
-		animated_sprite_2d.play("walk")
+		animated_sprite_2d.play("run")
 
 func perform_attack():
 	is_attacking = true
@@ -153,6 +153,7 @@ func spawn_attack_hitbox():
 func take_damage(amount):
 	health -= amount
 	print("Enemy took ", amount, " damage! Health: ", health)
+	
 	
 	if health <= 0:
 		die()
